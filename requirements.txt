@@ -1,8 +1,9 @@
 colorama==0.4.5
+datasets
 networkx
 ripserplusplus==1.1.2
-scikit-learn==1.1.2
-scipy==1.9.1
+scikit-learn
+scipy
 shap==0.41.0
 tokenizers==0.13.0
 transformers @ git+https://github.com/huggingface/transformers@fa4eeb4fd342cdbad50d1eeacdd7d7d7bc23b080
