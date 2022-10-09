@@ -3,7 +3,7 @@ from feature_src.template_features import *
 from feature_src.topological_features import *
 from utils import *
 import multiprocessing
-from functools import partial
+# from functools import partial
 import argparse
 import logging
 from tqdm.contrib.logging import logging_redirect_tqdm
@@ -13,23 +13,24 @@ import os
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
-def compute_topological_features(model_dir, data_file, attn_iter,
+def compute_topological_features(model_dir, data_file, attn_dir=None,texts_column="sentence",
                                  num_of_workers=2, batch_size=10, max_seq_length=64,
-                                 dump_size=100, stats_name="s_w_e_v_c_b0b1_m_k",
+                                 dump_size=100, stats_name="s_e_v_c_b0b1_m_k",
                                  stats_cap=500,
                                  thresholds_array=[0.025, 0.05, 0.1, 0.25, 0.5, 0.75],
                                  debug=False, **kwargs):
-    global logger
+    log_level = logging.DEBUG if debug else logging.INFO
+    logger = set_logger(level=log_level)
+    if not attn_dir:
+        attn_dir = model_dir + "/attentions/"
     data_path = pathlib.Path(data_file)
     subset = data_path.stem
-    logger.debug(f"Loading {data_path.suffix[1:]} dataset from path: {str(data_path.as_posix())}...")
-    texts_column = kwargs["data_text_column"]
+    logger.info(f"Loading {data_path.suffix[1:]} dataset from path: {str(data_path.as_posix())}...")
     dataset = load_dataset(path=data_path.suffix[1:],
                            data_files={subset: data_path.as_posix()})
     logger.debug(f"Getting `n_tokens` of passed sentences. Using `{texts_column}` column of the dataset.")
     ntokens_array = get_token_length(tokenizer_dir=model_dir, batch_texts=dataset[subset][texts_column],
                                      max_seq_length=max_seq_length, **kwargs)
-    layers_of_interest = list(map(int, kwargs.get("layers").split(",")))
     thrs = len(thresholds_array)
     pool = multiprocessing.get_context("spawn").Pool(num_of_workers)
     features_dir = pathlib.Path(model_dir + '/features')
@@ -37,8 +38,10 @@ def compute_topological_features(model_dir, data_file, attn_iter,
                  + "_lists_array_" + str(thrs) + '.npy'
     logger.debug("Topological features would be saved to: " + stats_file)
     stats_tuple_lists_array = []
+    adj_filenames = order_files(path=attn_dir, subset=subset)
+    logger.debug("Attention weights files:\n" + "\n".join(adj_filenames))
     with logging_redirect_tqdm():
-        for i, filename in attn_iter:
+        for i, filename in enumerate(tqdm(adj_filenames, desc='Calc topological features')):
             adj_matricies = np.load(filename, allow_pickle=True)
             logger.debug(f"Matrices loaded from: {filename}")
             ntokens = ntokens_array[i * batch_size * dump_size: (i + 1) * batch_size * dump_size]
@@ -57,17 +60,20 @@ def compute_topological_features(model_dir, data_file, attn_iter,
     return
 
 
-def calculate_barcodes(model_dir, data_file, attn_iter,
+def calculate_barcodes(model_dir, data_file, attn_dir=None,
                        num_of_workers=2, batch_size=10, max_seq_length=64,
-                       dump_size=100, dim=1, **kwargs):
-    global logger
+                       texts_column="sentence",
+                       dump_size=100, dim=1, debug=False, **kwargs):
+    log_level = logging.DEBUG if debug else logging.INFO
+    logger = set_logger(level=log_level)
+    if not attn_dir:
+        attn_dir = model_dir + "/attentions/"
     lower_bound = 1e-3
     data_path = pathlib.Path(data_file)
     subset = data_path.stem
-    logger.debug(f"Loading {data_path.suffix[1:]} dataset from path: {str(data_path.as_posix())}...")
+    logger.info(f"Loading {data_path.suffix[1:]} dataset from path: {str(data_path.as_posix())}...")
     dataset = load_dataset(path=data_path.suffix[1:],
                            data_files={subset: data_path.as_posix()})
-    texts_column = kwargs["data_text_column"]
     logger.debug(f"Getting `n_tokens` of passed sentences. Using `{texts_column}` column of the dataset.")
     ntokens_array = get_token_length(tokenizer_dir=model_dir, batch_texts=dataset[subset]['sentence'],
                                      max_seq_length=max_seq_length, **kwargs)
@@ -75,8 +81,10 @@ def calculate_barcodes(model_dir, data_file, attn_iter,
     logger.debug(f"Barcodes path: {str(features_dir)}.")
     barcodes_file = features_dir / subset
     pool = multiprocessing.get_context("spawn").Pool(num_of_workers)
+    adj_filenames = order_files(path=attn_dir, subset=subset)
+    logger.debug("Attention weights files:\n" + "\n".join(adj_filenames))
     with logging_redirect_tqdm():
-        for i, filename in attn_iter:
+        for i, filename in enumerate(tqdm(adj_filenames, desc='Calc barcodes')):
             barcodes = defaultdict(list)
             adj_matricies = np.load(filename, allow_pickle=True)
             logger.debug(f"Matrices loaded from: {filename}")
@@ -93,7 +101,8 @@ def calculate_barcodes(model_dir, data_file, attn_iter,
 
 
 def compute_ripser_features(model_dir, data_file, debug=False, **kwargs):
-    global logger
+    log_level = logging.DEBUG if debug else logging.INFO
+    logger = set_logger(level=log_level)
     subset = pathlib.Path(data_file).stem
     logger.debug(f"Loading barcodes from {model_dir + '/features/barcodes'} for the {subset} data subset...")
     barcode_json_files = order_files(path=model_dir + '/features/barcodes', subset=subset)
@@ -101,7 +110,7 @@ def compute_ripser_features(model_dir, data_file, debug=False, **kwargs):
 
     features_array = []
 
-    for filename in tqdm(barcode_json_files, desc='Calc ripser++ features'):
+    for filename in tqdm(barcode_json_files, desc='Calc ripser features'):
         barcodes = json.load(open(filename))
         logger.info(f"Barcodes loaded from: {filename}")
         features_part = []
@@ -109,9 +118,9 @@ def compute_ripser_features(model_dir, data_file, debug=False, **kwargs):
             features_layer = []
             for head in barcodes[layer]:
                 ref_barcodes = reformat_barcodes(barcodes[layer][head])
-                logger.debug(f"Calculating ripser++ features of saved barcodes; layer: {layer}, head: {head}")
+                logger.debug(f"Calculating ripser features of saved barcodes; layer: {layer}, head: {head}")
                 features = count_ripser_features(ref_barcodes, RIPSER_FEATURES)
-                logger.debug(f"Calculated ripser++ features")
+                logger.debug(f"Calculated ripser features")
                 features_layer.append(features)
             features_part.append(features_layer)
         features_array.append(np.asarray(features_part))
@@ -124,9 +133,14 @@ def compute_ripser_features(model_dir, data_file, debug=False, **kwargs):
     return
 
 
-def compute_template_features(model_dir, data_file, attn_iter,
-                              num_of_workers=2, max_seq_length=64, debug=False, **kwargs):
-    global logger
+def compute_template_features(model_dir, data_file, attn_dir=None,
+                              num_of_workers=2, max_seq_length=64,
+                              texts_column="sentence",
+                              debug=False, **kwargs):
+    log_level = logging.DEBUG if debug else logging.INFO
+    logger = set_logger(level=log_level)
+    if not attn_dir:
+        attn_dir = model_dir + "/attentions/"
     data_path = pathlib.Path(data_file)
     tokenizer = load_tokenizer(model_dir)
     subset = data_path.stem
@@ -141,9 +155,10 @@ def compute_template_features(model_dir, data_file, attn_iter,
     comma_id, dot_id = list(map(lambda x: tokenizer.convert_tokens_to_ids(x),
                                 [",", "."]))
     sep_id = tokenizer.sep_token_id
-    texts_column = kwargs["data_text_column"]
+    adj_filenames = order_files(path=attn_dir, subset=subset)
+    logger.debug("Attention weights files:\n" + "\n".join(adj_filenames))
     with logging_redirect_tqdm():
-        for i, filename in attn_iter:
+        for i, filename in enumerate(tqdm(adj_filenames, desc='Calc template features')):
             adj_matricies = np.load(filename, allow_pickle=True)
             batch_size = adj_matricies.shape[0]
             sentences = np.array(dataset[subset][texts_column][i * batch_size:(i + 1) * batch_size])
@@ -173,7 +188,6 @@ def compute_template_features(model_dir, data_file, attn_iter,
 
 
 def main(model_dir, feature_type, debug=False, **kwargs):
-    global logger
     log_level = logging.DEBUG if debug else logging.INFO
     logger = set_logger(level=log_level)
     num_of_workers = kwargs["num_of_workers"]
@@ -185,18 +199,15 @@ def main(model_dir, feature_type, debug=False, **kwargs):
     logger.info(f"Number of workers: {num_of_workers}")
     data_path = pathlib.Path(kwargs["data_file"])
     subset = data_path.stem
-    attn_dir = kwargs["attn_dir"]
-    if not kwargs["attn_dir"]: attn_dir = model_dir + "/attentions/"
-    adj_filenames = order_files(path=attn_dir, subset=subset)
-    adj_filenames_iter = enumerate(tqdm(adj_filenames, desc=f'Calc {feature_type} features'))
-    logger.debug("Attention weights files:\n" + "\n".join(adj_filenames))
+    if not kwargs["attn_dir"]: kwargs["attn_dir"] = model_dir + "/attentions/"
+
     for p in (model_dir + '/features', model_dir + '/features/barcodes'):
         features_dir = pathlib.Path(p)
         features_dir.mkdir(parents=True, exist_ok=True)
     features_calc_call = {"topological": compute_topological_features,
                           "ripser": calculate_barcodes,
                           "template": compute_template_features}
-    features_calc_call[feature_type](model_dir=model_dir, attn_iter=adj_filenames_iter, debug=debug, **kwargs)
+    features_calc_call[feature_type](model_dir=model_dir, debug=debug, **kwargs)
     if feature_type == "ripser":
         compute_ripser_features(model_dir=model_dir, debug=debug, **kwargs)
     return
@@ -216,16 +227,16 @@ if __name__ == "__main__":
     parser.add_argument("--max_seq_length", default=64, type=int)
     parser.add_argument('--data_text_column', type=str, default='sentence', help='A dataset column with text')
     parser.add_argument('--debug', action='store_true', help='Debug mode')
-    parser.add_argument("--layers", default=",".join([str(x) for x in range(12)]),
-                        type=str, help="A string containing layers indices, separated by a comma; e.g.`10,11`.")
     parser.add_argument("--stats_name", default="s_w_e_v_c_b0b1_m_k",
                         type=str, help="""A string containing types of features, separated by an underscore:\n 
-                        "s" - number of strongly connected components\n
-                        "w" - number of weakly connected components\n
-                        "e" - number of edges\n
-                        "v" - average vertex degree\n
-                        "c" - number of (directed) simple cycles\n
+                        "s" - number of strongly connected components
+                        "w" - number of weakly connected components
+                        "e" - number of edges
+                        "v" - average vertex degree
+                        "c" - number of (directed) simple cycles
                         "b0b1" - Betti numbers
+                        "m" - matching number
+                        "k" - chordality
                         """)
     parser.add_argument("--stats_cap", default=500, type=int)
     parser.add_argument("--thresholds_array", default="0.025,0.05,0.1,0.25,0.5,0.75",
@@ -241,7 +252,7 @@ if __name__ == "__main__":
              'Note: template features contain by default attention-to-`CLS`/`SEP` tokens.', )
     parser.add_argument(
         '--truncation', default=True, type=str,
-        help="A tokenizer's `truncation` strategy: `only_first`, "
+        help="A tokenizer `truncation` strategy: `only_first`, "
              "`only_second`, `longest_first`, `do_not_truncate`", )
     args = parser.parse_args()
     if args.do_not_pad:

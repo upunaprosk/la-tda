@@ -403,7 +403,7 @@ def function_for_v(list_of_v_degrees_of_graph):
 
 def compute_topological_features(model_dir, data_file, attn_dir=None,
                                  num_of_workers=2, batch_size=10, max_seq_length=64,
-                                 dump_size=100, stats_name="s_w_e_v_c_b0b1",
+                                 dump_size=100, stats_name="s_e_v_c_b0b1",
                                  stats_cap=500,
                                  thresholds_array=[0.025, 0.05, 0.1, 0.25, 0.5, 0.75],
                                  debug=False, **kwargs):
@@ -451,7 +451,7 @@ def compute_topological_features(model_dir, data_file, attn_dir=None,
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Extract attention weights.")
+    parser = argparse.ArgumentParser(description="Calc topological features")
     parser.add_argument("--model_dir", type=str, help="A directory with model weights saved.")
     parser.add_argument("--data_file", type=str, help="A csv datafile; required columns: `sentence` or `text`")
     parser.add_argument("--attn_dir", default="", type=str, help="A directory with model attention weights saved.")
@@ -462,7 +462,7 @@ if __name__ == "__main__":
     parser.add_argument('--debug', action='store_true', help='Debug mode')
     parser.add_argument("--layers", default=",".join([str(x) for x in range(12)]),
                         type=str, help="A string containing layers indices, separated by a comma; e.g.`10,11`.")
-    parser.add_argument("--stats_name", default="s_w_e_v_c_b0b1",
+    parser.add_argument("--stats_name", default="s_e_v_c_b0b1",
                         type=str, help="""A string containing types of features, separated by an underscore:\n 
                         "s" - number of strongly connected components\n
                         "w" - number of weakly connected components\n

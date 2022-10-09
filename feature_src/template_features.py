@@ -200,7 +200,7 @@ def compute_template_features(model_dir, data_file, attn_dir=None,
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Extract attention weights.")
+    parser = argparse.ArgumentParser(description="Calc template features")
     parser.add_argument("--model_dir", type=str,
                         help="A path to a directory containing vocabulary files/tokenizer name hosted on huggingface.co/<url>.")
     parser.add_argument("--data_file", type=str, help="A csv datafile; required columns: `sentence`.")
