@@ -1,12 +1,9 @@
 colorama==0.4.5
-networkx==2.8.6
-numpy==1.23.3
-pandas==1.5.0
+networkx
 ripserplusplus==1.1.2
 scikit-learn==1.1.2
 scipy==1.9.1
-sklearn==0.0
+shap==0.41.0
 tokenizers==0.13.0
-tqdm==4.64.1
 transformers @ git+https://github.com/huggingface/transformers@fa4eeb4fd342cdbad50d1eeacdd7d7d7bc23b080
 urllib3==1.26.12
