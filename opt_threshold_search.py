@@ -62,9 +62,11 @@ def print_thresholds(y, yhat, verbose=True):
             print('Accuracy =', acc, sep='\t')
             print('MCC score =', mcc, '\n', sep='\t')
     return thr, mcc, y_pred
+
+
 def print_scores(y, y_pred):
     bal_acc, acc, mcc = balanced_accuracy_score(y, y_pred), accuracy_score(y, y_pred), matthews_corrcoef(y, y_pred)
     print('Bal. Acc. =', round(bal_acc, 3), sep='\t')
-    print('Accuracy =', round(acc,3), sep='\t')
-    print('MCC score =', round(mcc,3), '\n', sep='\t')
+    print('Accuracy =', round(acc, 3), sep='\t')
+    print('MCC score =', round(mcc, 3), '\n', sep='\t')
     return acc, mcc

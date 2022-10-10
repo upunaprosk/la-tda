@@ -4,8 +4,6 @@ import numpy as np
 from pathlib import Path
 import itertools
 import tqdm
-from operator import itemgetter
-
 
 topological_names = 's_w_e_v_c_b0_b1_m_k'.split('_')
 topological_thresholds = [0.025, 0.05, 0.1, 0.25, 0.5, 0.75]
@@ -33,26 +31,26 @@ template_feature_names = [
     'prev',
     'next',
     'comma',
-    'dot', 
+    'dot',
     'sep']
 
 
 def topological_get_layer_head(features, layer, head):
-    df = features[layer,head,:,:,:]
+    df = features[layer, head, :, :, :]
     df = np.moveaxis(df, 0, -1)
-    df = np.moveaxis(df, 2,  1)
+    df = np.moveaxis(df, 2, 1)
     nfeat = df.shape[1]
     nthrs = df.shape[2]
-    # print(nfeat,nthrs)
-    df = df.reshape((df.shape[0], nfeat * nthrs)) # 7 topological features x 6 thresholds = 42 features
-    # print(len(topological_feature_names))
+    df = df.reshape((df.shape[0], nfeat * nthrs))
     return pd.DataFrame(df, columns=topological_feature_names)
 
+
 def barcode_get_layer_head(features, layer, head):
-    return pd.DataFrame(features[layer,head,:,:], columns=barcode_feature_names)
+    return pd.DataFrame(features[layer, head, :, :], columns=barcode_feature_names)
+
 
 def template_get_layer_head(features, layer, head):
-    df = features[layer,head,:,:]
+    df = features[layer, head, :, :]
     return pd.DataFrame(df.T, columns=template_feature_names)
 
 
@@ -93,7 +91,8 @@ def load_features(dataset_name, model_dir, features_dir="./features", heads="all
     pbar.close()
     return features
 
-def read_labels(set_name, data_dir = "./data", file_type = ".csv"):
+
+def read_labels(set_name, data_dir="./data", file_type=".csv"):
     header = 'infer'
     names = None
     delimeter = ","
@@ -101,5 +100,5 @@ def read_labels(set_name, data_dir = "./data", file_type = ".csv"):
         header = None
         names = ["Source", "label", "code", "sentence"]
         delimeter = "\t"
-    df = pd.read_csv(data_dir+set_name+file_type, header=header, names=names, delimiter=delimeter)
+    df = pd.read_csv(data_dir + set_name + file_type, header=header, names=names, delimiter=delimeter)
     return df["sentence"], df["label"].values
