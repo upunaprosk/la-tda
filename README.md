@@ -8,10 +8,10 @@ Pre-trained encoders have been successfully used in a variety of text classifica
 We present a TDA-based interpretable feature generation approach to the acceptability classification task. We follow the methodology suggested in the following papers:
 
 1.   Kushnareva, L., Cherniavskii, D., Mikhailov, V., Artemova, E., Barannikov, S., Bernstein, A., Piontkovskaya, I., Piontkovski, D., & Burnaev, E. (2021). Artificial Text Detection via Examining the Topology of Attention Maps. In Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing (pp. 635–649). Association for Computational Linguistics. [[paper](https://arxiv.org/pdf/2109.04825.pdf)][[code](https://github.com/danchern97/tda4atd)]
-2.   Kushnareva L., Piontkovski D., Piontkovskaya I. Betti numbers of attention graphs is all you really need //arXiv preprint arXiv:2207.01903. – 2022. [[paper](https://arxiv.org/pdf/2207.01903.pdf)] 
+2.  Kushnareva, Laida, Dmitri Piontkovski, and Irina Piontkovskaya. "Betti numbers of attention graphs is all you really need." arXiv preprint arXiv:2207.01903 (2022). [[paper](https://arxiv.org/pdf/2207.01903.pdf)] 
 
 The algorithm for calculation of persistent barcodes (or canonical forms) was firstly intoduced in
-Barannikov S. (1994). “The Framed morse Complex and its Invariants,” in Adv. Soviet Math., Vol. 21. Providence, RI: Amer. Math. Soc., 93–115. [[paper](https://hal.archives-ouvertes.fr/hal-01745109/document)]
+Barannikov, Serguei. "The framed Morse complex and its invariants." Advances in Soviet Mathematics 21 (1994): 93-116. [[paper](https://hal.archives-ouvertes.fr/hal-01745109/document)]
 
 We use topological features of the attention graphs, features of the barcodes and attention-to-pattern features.  
 We conduct all the experiments on monolingual encoders fine-tuned on grammatical acceptability corpora in [English](https://github.com/nyu-mll/CoLA-baselines), [Italian](https://github.com/dhfbk/ItaCoLA-dataset), and [Russian](https://github.com/RussianNLP/RuCoLA).  
