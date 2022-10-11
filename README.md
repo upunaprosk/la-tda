@@ -11,7 +11,7 @@ We present a TDA-based interpretable feature generation approach to the acceptab
 2.  Kushnareva, Laida, Dmitri Piontkovski, and Irina Piontkovskaya. "Betti numbers of attention graphs is all you really need." arXiv preprint arXiv:2207.01903 (2022). [[paper](https://arxiv.org/pdf/2207.01903.pdf)] 
 
 The algorithm for calculation of persistent barcodes (or canonical forms) was firstly intoduced in
-Barannikov, Serguei. "The framed Morse complex and its invariants." Advances in Soviet Mathematics 21 (1994): 93-116. [[paper](https://hal.archives-ouvertes.fr/hal-01745109/document)]
+*Barannikov, Serguei. "The framed Morse complex and its invariants." Advances in Soviet Mathematics 21 (1994): 93-116.* [[paper](https://hal.archives-ouvertes.fr/hal-01745109/document)]
 
 We use topological features of the attention graphs, features of the barcodes and attention-to-pattern features.  
 We conduct all the experiments on monolingual encoders fine-tuned on grammatical acceptability corpora in [English](https://github.com/nyu-mll/CoLA-baselines), [Italian](https://github.com/dhfbk/ItaCoLA-dataset), and [Russian](https://github.com/RussianNLP/RuCoLA).  
