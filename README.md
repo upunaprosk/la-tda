@@ -1,9 +1,11 @@
-# Can BERT eat RuCoLA? Topological Data Analysis to Explain
+# Can BERT eat RuCoLA*? Topological Data Analysis to Explain
 
 This repository contains code for the paper _Can BERT eat RuCoLA? Topological Data Analysis to Explain_ accepted to Slavic NLP 2023.
 
 In the paper we investigate how Transformer language models (LMs) fine-tuned for acceptability classification capture linguistic features. Our approach uses the best practices of topological data analysis (TDA) in NLP: we construct directed attention graphs from attention matrices, derive topological features from them, and feed them to linear classifiers.
 We introduce **new topological features**, suggest a **new TDA-based approach for measuring the distance between pre-trained and fine-tuned LMs** with large and base configurations, and determine the **roles of attention heads** in the context of LA tasks in Russian and English.  
+
+*Arugula or rocket salad in English.
 ___
 
 Attention graphs for acceptable (left) and unacceptable (right) sentences with corresponding attention matrices, extracted from BERT (Layer, Head: [9,5]).
@@ -19,7 +21,7 @@ Attention graphs for acceptable (left) and unacceptable (right) sentences with c
 * Use ```4_TDA_acceptability_classification.ipynb``` for acceptability judgements classification with TDA features.
 * Use ```5_Head_importance.ipynb``` to evaluate per-sample confidence and estimate head and feature importances per violation group and per-sample.
 
-We conduct all the experiments on monolingual encoders fine-tuned on grammatical acceptability corpora in [English](https://github.com/nyu-mll/CoLA-baselines) and [Russian](https://github.com/RussianNLP/RuCoLA).  
+We conduct all the experiments on monolingual encoders fine-tuned on grammatical acceptability corpora in [English CoLA](https://github.com/nyu-mll/CoLA-baselines) and [Russian RuCoLA](https://github.com/RussianNLP/RuCoLA):leaves:.  
 
 [Other notebooks](https://github.com/upunaprosk/la-tda/tree/master/other%20notebooks) directory contains notebooks for acceptability judgements classification with TDA features with linear feature selection, principal components importance estimation with Shapley values, and autosklearn classification example.
 
