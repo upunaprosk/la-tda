@@ -1,6 +1,6 @@
 colorama==0.4.5
 datasets
-networkx
+networkx==2.8.8
 ripserplusplus==1.1.2
 scikit-learn
 scipy
