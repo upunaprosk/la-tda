@@ -1,146 +1,37 @@
-# The application of topological data analysis in the grammatical acceptability classification task
+# Can BERT eat RuCoLA? Topological Data Analysis to Explain
 
+This repository contains code for the paper _Can BERT eat RuCoLA? Topological Data Analysis to Explain_ accepted to Slavic NLP 2023.
 
-## Abstract
-Pre-trained encoders have been successfully used in a variety of text classification tasks. Linguistic competence estimation, however, is still a challenging problem for transformers. For example, the Corpus of Language Acceptability (CoLA) is considered the most complicated task of the GLUE benchmark, causing inconsistent and unreliable results across tuning runs. Meanwhile, language acceptability judgements' peculiarities require confident and precise predictions on texts with linguistic phenomena, ranging from morphological to semantical. 
-
-
-
-## Method 
-
-We present a TDA-based interpretable feature generation approach to the acceptability classification task. 
+In the paper we investigate how Transformer language models (LMs) fine-tuned for acceptability classification capture linguistic features. Our approach uses the best practices of topological data analysis (TDA) in NLP: we construct directed attention graphs from attention matrices, derive topological features from them, and feed them to linear classifiers.
+We introduce **new topological features**, suggest a **new TDA-based approach for measuring the distance between pre-trained and fine-tuned LMs** with large and base configurations, and determine the **roles of attention heads** in the context of LA tasks in Russian and English.  
+___
 
 Attention graphs for acceptable (left) and unacceptable (right) sentences with corresponding attention matrices, extracted from BERT (Layer, Head: [9,5]).
 <p align="center">
 <img src="./plots/acceptable_unacceptable_ex.png" width="750">
 </p>
 
-We follow the methodology suggested in the following papers:
+# Usage
 
-1.   Kushnareva, L., Cherniavskii, D., Mikhailov, V., Artemova, E., Barannikov, S., Bernstein, A., Piontkovskaya, I., Piontkovski, D., & Burnaev, E. (2021). Artificial Text Detection via Examining the Topology of Attention Maps. In Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing (pp. 635–649). Association for Computational Linguistics. [[paper](https://arxiv.org/pdf/2109.04825.pdf)][[code](https://github.com/danchern97/tda4atd)]
-2.  Kushnareva, Laida, Dmitri Piontkovski, and Irina Piontkovskaya. "Betti numbers of attention graphs is all you really need." arXiv preprint arXiv:2207.01903 (2022). [[paper](https://arxiv.org/pdf/2207.01903.pdf)] 
+* Use ```1_Fine-tuning_example.ipynb``` for training LM on LA (Russian or English) task.
+* Use ```2_1_Topological_and_template_features_calculation.ipynb```  and ```2_2_Ripser_features.ipynb``` for computing features.
+* Use ```3_1_Topological_features_distance.ipynb```  and ```3_2_JS_divergence_distance.ipynb``` to measure fine-tuning effect with TDA feature distance and JS Shennon divergence.
+* Use ```4_TDA_acceptability_classification.ipynb``` for acceptability judgements classification with TDA features.
+* Use ```5_Head_importance.ipynb``` to evaluate per-sample confidence and estimate head and feature importances per violation group and per-sample.
 
-The algorithm for the calculation of persistent barcodes (or canonical forms) was first introduced in
-*Barannikov, Serguei. "The framed Morse complex and its invariants." Advances in Soviet Mathematics 21 (1994): 93-116.* [[paper](https://hal.archives-ouvertes.fr/hal-01745109/document)]
+We conduct all the experiments on monolingual encoders fine-tuned on grammatical acceptability corpora in [English](https://github.com/nyu-mll/CoLA-baselines) and [Russian](https://github.com/RussianNLP/RuCoLA).  
 
-We use topological features of the attention graphs, features of the barcodes and attention-to-pattern features.  
-We conduct all the experiments on monolingual encoders fine-tuned on grammatical acceptability corpora in [English](https://github.com/nyu-mll/CoLA-baselines), [Italian](https://github.com/dhfbk/ItaCoLA-dataset), and [Russian](https://github.com/RussianNLP/RuCoLA).  
+[Other notebooks](https://github.com/upunaprosk/la-tda/tree/master/other%20notebooks) directory contains notebooks for acceptability judgements classification with TDA features with linear feature selection, principal components importance estimation with Shapley values, and autosklearn classification example.
 
-## Acceptability classification results
+Consider the following related work introducing TDA-based approaches in NLP: 
 
-**Fine-tuned setting** 
-| Model             | In domain dev set |      Out of domain dev set |
-|--------------|:-----------------:|:----------------:|
-|              | Acc.     \| MCC | Acc.    \| MCC | 
-| *En-BERT* | 0.850  \| 0.634 | 0.820    \| 0.561 | 
-| **En-BERT + TDA** | 0.856   \| **0.654** | 0.828   \| **0.589** | 
-| *Ita-BERT* | 0.867    \| 0.427 | 0.873   \| 0.468 | 
-| **Ita-BERT+ TDA** | 0.832    \| **0.435** | 0.836    \| **0.475**| 
-| *Ru-BERT* |0.803    \| 0.450 | 0.732  \| 0.389 | 
-| **Ru-BERT+ TDA** | 0.797     \| **0.465** | 0.736   \| **0.405** | 
+* Kushnareva, L., Cherniavskii, D., Mikhailov, V., Artemova, E., Barannikov, S., Bernstein, A., Piontkovskaya, I., Piontkovski, D., & Burnaev, E. (2021). Artificial Text Detection via Examining the Topology of Attention Maps. In Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing (pp. 635–649). Association for Computational Linguistics. [[paper](https://arxiv.org/pdf/2109.04825.pdf)][[code](https://github.com/danchern97/tda4atd)]
+*  Kushnareva, Laida, Dmitri Piontkovski, and Irina Piontkovskaya. "Betti numbers of attention graphs is all you really need." arXiv preprint arXiv:2207.01903 (2022). [[paper](https://arxiv.org/pdf/2207.01903.pdf)] 
+* Barannikov, Serguei. "The framed Morse complex and its invariants." Advances in Soviet Mathematics 21 (1994): 93-116.* [[paper](https://hal.archives-ouvertes.fr/hal-01745109/document)] (The algorithm for the calculation of persistent barcodes (or canonical forms)) 
 
+# Feature importance
 
-**LMs with frozen weights setting**
+Important features sorted by Mann-Whitney test p-value are presented [here](https://github.com/upunaprosk/la-tda/tree/master/feature_selection).
 
-| Model             | In domain dev set |      Out of domain dev set |
-|--------------|:-----------------:|:----------------:|
-|              | Acc.     \| MCC | Acc.    \| MCC | 
-| *En-BERT* | 0.626  \| 0.039 | 0.643    \|0.124 | 
-| **En-BERT + TDA** | 0.770  \| **0.460** | 0.750   \| **0.439** | 
-| *Ita-BERT* | 0.572    \| 0.052 |  0.592   \| 0.058 | 
-| **Ita-BERT+ TDA** | 0.632   \| **0.235** | 0.608    \| **0.424**| 
-| *Ru-BERT* |0.636    \| 0.143 | 0.540 \| 0.178 | 
-| **Ru-BERT+ TDA** | 0.709    \| **0.283** | 0.541   \| **0.247** | 
+*Remark:* Results in that folder for Swedish were obtained when fine-tuning Swe-BERT on ```DaLAJ``` [dataset](https://spraakbanken.gu.se/en/resources/dalaj), for Italian, we report feature importances extracted from Ita-BERT fine-tuned on  ```ItaCoLA``` Italian [dataset](https://github.com/dhfbk/ItaCoLA-dataset).
 
-
-**Fine-tuning effect illustration (feature-to-label correlation coefficients)**
-
-*Correlation coefficients between Attention-to-[SEP] and targets
-From left to right: En-CoLA, Ita-CoLA, Ru-CoLA*
-
-<img src="./plots/SEP-token_ex.png" width="400">
-
-
-*Performance (Matthews Correlation Coefficient) of the fine-tuned monolingual models by major linguistic feature*
-
-**En-CoLA**    
-<img src="./plots/en_mcc_test_phenomena.png">
-
-**Ita-CoLA**     
-<img src="./plots/ita_mcc_test_phenomena.png">
-
-**Ru-CoLA** (Accuracy)  
-<img src="./plots/ru_acc_test_phenomena.png" width="500">
-
-**Lists of important features per dataset**
-
-| Language/corpus             | Topological/Barcodes |     Template |
-|--------------|:-----------------:|:----------------:|
-| English |```h0_n_d_m_t0.75_11_9,  b0_t0.25_11_9, v_t0.025_11_9``` | ```self_11_9, sep_10_6, beginning_11_6``` |
-| Italian |```c_t0.5_11_0,  b1_t0.5_11_0, b0_t0.25_11_0``` | ```self_11_0, beginning_9_4, beginning_10_10``` |
-| Russian |```b0_t0.75_11_11, m_t0.05_11_11, b0_t0.25_11_3``` | ```self_11_11, sep_11_6, prev_10_7```|
-| Swedish |```v_t0.025_10_10,  v_t0.05_10_10, h0_t_d_10_10``` | ```prev_10_10, next_10_11, prev_8_0```|
-
-*Remark:* results above for Swedish were obtained when fine-tuning Swe-BERT on ```DaLAJ``` [dataset](https://spraakbanken.gu.se/en/resources/dalaj).
-
-Important features sorted by Mann-Whitney test p-value are presented [here](https://github.com/upunaprosk/la-tda/tree/master/feature%20selection).
-
-## Usage
-
-To calculate the features, one can use ```1_LM_Acceptability_judgements_feature_calculation.ipynb```.
-
-To train the language model, run ```train.py``` with ```model_name_or_path```, ```task_name``` (for GLUE tasks) or train/validation/test data files or ```dataset_name```available at [HuggingFace Datasets Hub](https://github.com/huggingface/datasets) arguments. Example:
-```
-python train.py --model_name_or_path bert-base-cased \
-        --train_file data/en-cola/train.csv \
-        --validation_file data/en-cola/dev.csv \
-        --test_file data/en-cola/test.csv \
-        --do_train \
-        --do_eval \
-        --do_predict\
-        --num_train_epochs $epoch\
-        --learning_rate $lr\
-        --weight_decay $decay\
-        --max_seq_length 64\
-        --per_device_train_batch_size $batch\
-        --output_dir $output_dir\
-        --balance_loss\
-        --freeze
-``` 
-To calculate features, run ```python features_calculation.py``` specifying the ```model_dir```,  ```data_file``` and ```feature_type```.  
-Full list of arguments: 
-
-```
-  --model_dir MODEL_DIR
-                        A directory with model weights saved.
-  --data_file DATA_FILE
-                        A directory with data_file.
-  --feature_type {topological,ripser,template}
-  --attn_dir ATTN_DIR   A directory with model attention weights saved.
-  --num_of_workers NUM_OF_WORKERS
-  --batch_size BATCH_SIZE
-  --dump_size DUMP_SIZE
-  --max_seq_length MAX_SEQ_LENGTH
-  --data_text_column DATA_TEXT_COLUMN
-                        A dataset column with text
-  --debug               Debug mode
-  --stats_name STATS_NAME
-                        A string containing types of features, separated by an
-                        underscore: "s" - number of strongly connected
-                        components "w" - number of weakly connected components
-                        "e" - number of edges "v" - average vertex degree "c"
-                        - number of (directed) simple cycles "b0b1" - Betti
-                        numbers "m" - matching number "k" - chordality
-  --stats_cap STATS_CAP
-  --thresholds_array THRESHOLDS_ARRAY
-                        Thresholds to be used for graph construction.
-  --dim DIM             A dimension to compute persistent homology up to.
-  --padding PADDING     A padding strategy: `max_length` or `longest`
-  --do_not_pad          If passed sequences are not padded.
-  --no_special_tokens   If passed `add_special_tokens` tokenizer argument is
-                        set to False. Note: template features contain by
-                        default attention-to-`CLS`/`SEP` tokens.
-  --truncation TRUNCATION
-                        A tokenizer's `truncation` strategy: `only_first`,
-                        `only_second`, `longest_first`, `do_not_truncate`
- ```
