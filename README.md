@@ -35,5 +35,31 @@ Consider the following related work introducing TDA-based approaches in NLP:
 
 Important features sorted by Mann-Whitney test p-value are presented [here](https://github.com/upunaprosk/la-tda/tree/master/feature_selection).
 
-*Remark:* Results in that folder for Swedish were obtained when fine-tuning Swe-BERT on ```DaLAJ``` [dataset](https://spraakbanken.gu.se/en/resources/dalaj), for Italian, we report feature importances extracted from Ita-BERT fine-tuned on  ```ItaCoLA``` Italian [dataset](https://github.com/dhfbk/ItaCoLA-dataset).
+*Remark:* Results in that folder for Swedish were obtained when fine-tuning Swe-BERT on ```DaLAJ``` [dataset](https://spraakbanken.gu.se/en/resources/dalaj), for Italian, we report feature importances extracted from Ita-BERT fine-tuned on  ```ItaCoLA``` [dataset](https://github.com/dhfbk/ItaCoLA-dataset).
 
+# Contact
+If you have any questions about the project and/or implementation, you can reach us [here](mailto:irina.proskurina@univ-lyon2.fr).
+
+# Cite
+Our paper is accepted to the EACL 2023 Slavic NLP workshop. 
+
+```
+Irina Proskurina, Ekaterina Artemova, and Irina Piontkovskaya. 2023. Can BERT eat RuCoLA? Topological Data Analysis to Explain. In Proceedings of the 9th Workshop on Slavic Natural Language Processing 2023 (SlavicNLP 2023), pages 123–137, Dubrovnik, Croatia. Association for Computational Linguistics.
+```
+
+```
+@inproceedings{proskurina-etal-2023-bert,
+    title = "Can {BERT} eat {R}u{C}o{LA}? Topological Data Analysis to Explain",
+    author = "Proskurina, Irina  and
+      Artemova, Ekaterina  and
+      Piontkovskaya, Irina",
+    booktitle = "Proceedings of the 9th Workshop on Slavic Natural Language Processing 2023 (SlavicNLP 2023)",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.bsnlp-1.15",
+    pages = "123--137",
+    abstract = "This paper investigates how Transformer language models (LMs) fine-tuned for acceptability classification capture linguistic features. Our approach is based on best practices of topological data analysis (TDA) in NLP: we construct directed attention graphs from attention matrices, derive topological features from them and feed them to linear classifiers. We introduce two novel features, chordality and the matching number, and show that TDA-based classifiers outperform fine-tuning baselines. We experiment with two datasets, CoLA and RuCoLA, in English and Russian, which are typologically different languages. On top of that, we propose several black-box introspection techniques aimed at detecting changes in the attention mode of the LM{'}s during fine-tuning, defining the LM{'}s prediction confidences, and associating individual heads with fine-grained grammar phenomena. Our results contribute to understanding the behaviour of monolingual LMs in the acceptability classification task, provide insights into the functional roles of attention heads, and highlight the advantages of TDA-based approaches for analyzing LMs.We release the code and the experimental results for further uptake.",
+}
+```
