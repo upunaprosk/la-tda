@@ -1,6 +1,9 @@
 # Can BERT eat RuCoLA*? Topological Data Analysis to Explain
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/can-bert-eat-rucola-topological-data-analysis/linguistic-acceptability-on-cola)](https://paperswithcode.com/sota/linguistic-acceptability-on-cola?p=can-bert-eat-rucola-topological-data-analysis)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/can-bert-eat-rucola-topological-data-analysis/linguistic-acceptability-on-rucola)](https://paperswithcode.com/sota/linguistic-acceptability-on-rucola?p=can-bert-eat-rucola-topological-data-analysis)
 
-This repository contains code for the paper _Can BERT eat RuCoLA? Topological Data Analysis to Explain_ accepted to Slavic NLP 2023.
+
+This repository contains code and data for the EACL 2023 SlavNLP workshop paper [_Can BERT eat RuCoLA? Topological Data Analysis to Explain_](https://aclanthology.org/2023.bsnlp-1.pdf#page=131).
 
 In the paper we investigate how Transformer language models (LMs) fine-tuned for acceptability classification capture linguistic features. Our approach uses the best practices of topological data analysis (TDA) in NLP: we construct directed attention graphs from attention matrices, derive topological features from them, and feed them to linear classifiers.
 We introduce **new topological features**, suggest a **new TDA-based approach for measuring the distance between pre-trained and fine-tuned LMs** with large and base configurations, and determine the **roles of attention heads** in the context of LA tasks in Russian and English.  
@@ -20,6 +23,8 @@ Attention graphs for acceptable (left) and unacceptable (right) sentences with c
 * Use ```3_1_Topological_features_distance.ipynb```  and ```3_2_JS_divergence_distance.ipynb``` to measure fine-tuning effect with TDA feature distance and JS Shennon divergence.
 * Use ```4_TDA_acceptability_classification.ipynb``` for acceptability judgements classification with TDA features.
 * Use ```5_Head_importance.ipynb``` to evaluate per-sample confidence and estimate head and feature importances per violation group and per-sample.
+
+**Features extracted from fine-tuned LMs can be found here: https://huggingface.co/iproskurina (models with prefix tda-*).**
 
 We conduct all the experiments on monolingual encoders fine-tuned on grammatical acceptability corpora in [English CoLA](https://github.com/nyu-mll/CoLA-baselines) and [Russian RuCoLA](https://github.com/RussianNLP/RuCoLA):leaves:.  
 
