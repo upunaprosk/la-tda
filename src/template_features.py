@@ -4,7 +4,7 @@ import pathlib
 from tqdm import tqdm
 from datasets import load_dataset
 import argparse
-from .feature_calc_utils import *
+from feature_calc_utils import *
 
 
 def matrix_distance(matricies, template, broadcast=True):

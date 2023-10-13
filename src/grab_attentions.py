@@ -8,7 +8,7 @@ from datasets import load_dataset
 from tqdm import tqdm
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-from src.feature_calc_utils import text_preprocessing
+from feature_calc_utils import text_preprocessing
 from utils import *
 
 
