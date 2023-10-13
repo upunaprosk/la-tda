@@ -8,8 +8,8 @@ from datasets import load_dataset
 from tqdm import tqdm
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-from feature_calc_utils import text_preprocessing
-from utils import *
+from .feature_calc_utils import text_preprocessing
+from .utils import *
 
 
 def grab_attention_weights(model, tokenizer, sentences, max_seq_length, device='cuda:0',
