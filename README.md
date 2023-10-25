@@ -5,7 +5,7 @@
 
 This repository contains code and data for the EACL 2023 SlavNLP workshop paper [_Can BERT eat RuCoLA? Topological Data Analysis to Explain_](https://aclanthology.org/2023.bsnlp-1.pdf#page=131).
 
-In the paper we investigate how Transformer language models (LMs) fine-tuned for acceptability classification capture linguistic features. Our approach uses the best practices of topological data analysis (TDA) in NLP: we construct directed attention graphs from attention matrices, derive topological features from them, and feed them to linear classifiers.
+In the paper, we investigate how Transformer language models (LMs) fine-tuned for acceptability classification capture linguistic features. Our approach uses the best practices of topological data analysis (TDA) in NLP: we construct directed attention graphs from attention matrices, derive topological features from them, and feed them to linear classifiers.
 We introduce **new topological features**, suggest a **new TDA-based approach for measuring the distance between pre-trained and fine-tuned LMs** with large and base configurations, and determine the **roles of attention heads** in the context of LA tasks in Russian and English.  
 
 *Arugula or rocket salad in English.
@@ -24,8 +24,8 @@ Attention graphs for acceptable (left) and unacceptable (right) sentences with c
 * Use ```4_TDA_acceptability_classification.ipynb``` for acceptability judgements classification with TDA features.
 * Use ```5_Head_importance.ipynb``` to evaluate per-sample confidence and estimate head and feature importances per violation group and per-sample.
 
-**Features extracted from fine-tuned LMs can be found here: https://huggingface.co/iproskurina (models with prefix tda-*).**
-
+**Features extracted from fine-tuned LMs can be found here: https://huggingface.co/iproskurina (models with prefix tda-*).**  
+**Classifiers can be downloaded [here](https://www.dropbox.com/scl/fi/4n0nuxuo4ua5d3246duq8/trained_cls.zip?rlkey=7jwgag7h8dgzfn1ssiu2cib65&dl=0).**  
 We conduct all the experiments on monolingual encoders fine-tuned on grammatical acceptability corpora in [English CoLA](https://github.com/nyu-mll/CoLA-baselines) and [Russian RuCoLA](https://github.com/RussianNLP/RuCoLA):leaves:.  
 
 [Other notebooks](https://github.com/upunaprosk/la-tda/tree/master/other%20notebooks) directory contains notebooks for acceptability judgements classification with TDA features with linear feature selection, principal components importance estimation with Shapley values, and autosklearn classification example.
@@ -40,13 +40,13 @@ Consider the following related work introducing TDA-based approaches in NLP:
 
 Important features sorted by Mann-Whitney test p-value are presented [here](https://github.com/upunaprosk/la-tda/tree/master/feature_selection).
 
-*Remark:* Results in that folder for Swedish were obtained when fine-tuning Swe-BERT on ```DaLAJ``` [dataset](https://spraakbanken.gu.se/en/resources/dalaj), for Italian, we report feature importances extracted from Ita-BERT fine-tuned on  ```ItaCoLA``` [dataset](https://github.com/dhfbk/ItaCoLA-dataset).
+*Remark:* Results in that folder for Swedish were obtained when fine-tuning Swe-BERT on ```DaLAJ``` [dataset](https://spraakbanken.gu.se/en/resources/dalaj). For Italian, we report feature importances extracted from Ita-BERT fine-tuned on  ```ItaCoLA``` [dataset](https://github.com/dhfbk/ItaCoLA-dataset).
 
 # Contact
 If you have any questions about the project and/or implementation, you can reach us [here](mailto:irina.proskurina@univ-lyon2.fr).
 
 # Cite
-Our paper is accepted to the EACL 2023 Slavic NLP workshop. 
+Our paper has been accepted to the EACL 2023 Slavic NLP workshop. 
 
 ```
 Irina Proskurina, Ekaterina Artemova, and Irina Piontkovskaya. 2023. Can BERT eat RuCoLA? Topological Data Analysis to Explain. In Proceedings of the 9th Workshop on Slavic Natural Language Processing 2023 (SlavicNLP 2023), pages 123–137, Dubrovnik, Croatia. Association for Computational Linguistics.
